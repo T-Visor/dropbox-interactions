@@ -2,3 +2,5 @@ dropbox
 os
 sys
 re
+dotenv
+python-dotenv

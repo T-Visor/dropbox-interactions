@@ -4,6 +4,7 @@ import dropbox
 import os
 import sys
 import re
+import dotenv
 
 
 def main():
@@ -15,17 +16,19 @@ def main():
             Upload a local file to Dropbox.
 
         Usage: 
-            python3 dropbox-upload.py <local_file_path> <dropbox_file_path> <access_token>
+            python3 dropbox-upload.py <local_file_path> <dropbox_file_path>
     """
+    # Load environment variables from the '.env' file
+    dotenv.load_dotenv()
+
     # Check if the correct number of command-line arguments are provided
-    if len(sys.argv) != 4:
-        print('Usage: python dropbox-upload.py <local_file_path> <dropbox_file_path> <access_token>')
+    if len(sys.argv) != 3:
+        print('Usage: python dropbox-upload.py <local_file_path>')
         return
 
     # Parse command-line arguments
     local_file_path = sys.argv[1]
     dropbox_file_path = sys.argv[2]
-    access_token = sys.argv[3]
 
     # Check if the local file exists
     if not does_local_file_exist(local_file_path):
@@ -37,10 +40,18 @@ def main():
         print(f'Dropbox file_path "{dropbox_file_path}" is not a valid pathname')
         return
 
+    # Load the access token for Dropbox
+    dropbox_access_token = os.getenv('DROPBOX_ACCESS_TOKEN')
+    if not dropbox_access_token:
+        print(f'Dropbox access token could not be loaded from ".env" file')
+        return
+    else:
+        print(f'Successfully loaded access token from ".env" file\n')
+
     # Proceed to upload to Dropbox
     print(f'SOURCE: {local_file_path}')
     print(f'DESTINATION: {dropbox_file_path}\n')
-    upload_to_dropbox(local_file_path, dropbox_file_path, access_token)
+    upload_to_dropbox(local_file_path, dropbox_file_path, dropbox_access_token)
 
 
 def does_local_file_exist(file_path: str) -> bool:
@@ -92,7 +103,7 @@ def upload_to_dropbox(local_file_path: str, dropbox_file_path: str, access_token
     with open(local_file_path, 'rb') as f:
         try:
             dropbox_connection.files_upload(f.read(), dropbox_file_path)
-            print(f'SUCCESS: File "{local_file_path}" uploaded to Dropbox as "{dropbox_file_path}".')
+            print(f'SUCCESS: File "{local_file_path}" uploaded to Dropbox as "{dropbox_file_path}"')
         except dropbox.exceptions.ApiError as e:
             print(f'Error uploading file to Dropbox: {e}')
 
