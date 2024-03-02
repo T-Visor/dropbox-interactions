@@ -23,7 +23,7 @@ def main():
 
     # Check if the correct number of command-line arguments are provided
     if len(sys.argv) != 3:
-        print('Usage: python dropbox-upload.py <local_file_path>')
+        print('Usage: python dropbox-upload.py <local_file_path> <dropbox_file_path>')
         return
 
     # Parse command-line arguments
