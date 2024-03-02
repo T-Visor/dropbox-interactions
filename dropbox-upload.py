@@ -45,8 +45,6 @@ def main():
     if not dropbox_access_token:
         print(f'Dropbox access token could not be loaded from ".env" file')
         return
-    else:
-        print(f'Successfully loaded access token from ".env" file\n')
 
     # Proceed to upload to Dropbox
     print(f'SOURCE: {local_file_path}')
